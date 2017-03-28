@@ -1,7 +1,7 @@
-{ stdenv, lib, callPackage, fetchurl, makeDesktopItem, makeWrapper
+{ stdenv, lib, callPackage, fetchurl, makeDesktopItem
 , # Patchelf dependencies:
-  alsaLib, atomEnv, boehmgc, flac, libogg, libvorbis, libXScrnSaver, mesa
-, openssl, xlibs, xorg, zlib
+  alsaLib, atomEnv, boehmgc, flac, libogg, libvorbis
+, mesa, openssl, xlibs, xorg, zlib
 }:
 
 let
@@ -28,7 +28,7 @@ in
         inherit sha256;
     };
 
-    buildInputs = [ makeWrapper libXScrnSaver ];
+    buildInputs = [];
 
     desktopItem = makeDesktopItem {
       name = "kodestudio";
@@ -55,47 +55,47 @@ in
           $out/kodestudio
       patchelf \
           --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
-          --set-rpath ".:${stdenv.cc.libc}/lib:${xorg.libXinerama}/lib:${xorg.libX11}/lib:${alsaLib}/lib:${mesa}/lib:${openssl.out}/lib" \
+          --set-rpath "$out/resources/app/extensions/krom/Krom/linux/:${stdenv.cc.libc}/lib:${xorg.libXinerama}/lib:${xorg.libX11}/lib:${alsaLib}/lib:${mesa}/lib:${openssl.out}/lib" \
           $out/resources/app/extensions/krom/Krom/linux/Krom
       patchelf \
           --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
-          --set-rpath ".:${stdenv.cc.libc}/lib" \
+          --set-rpath "${stdenv.cc.libc}/lib" \
           $out/resources/app/extensions/kha/Kha/Kore/Tools/krafix/krafix-linux64
       patchelf \
           --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
-          --set-rpath ".:${stdenv.cc.libc}/lib" \
+          --set-rpath "${stdenv.cc.libc}/lib" \
           $out/resources/app/extensions/kha/Kha/Kore/Tools/kraffiti/kraffiti-linux64
       patchelf \
           --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
-          --set-rpath ".:${stdenv.cc.libc}/lib:${stdenv.cc.cc.lib}/lib" \
+          --set-rpath "${stdenv.cc.libc}/lib:${stdenv.cc.cc.lib}/lib" \
           $out/resources/app/extensions/kha/Kha/Tools/kravur/kravur-linux64
       patchelf \
           --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
-          --set-rpath ".:${stdenv.cc.libc}/lib:${zlib}/lib" \
+          --set-rpath "${stdenv.cc.libc}/lib:${zlib}/lib" \
           $out/resources/app/extensions/kha/Kha/Tools/haxe/haxe-linux64
       patchelf \
           --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
-          --set-rpath ".:${stdenv.cc.libc}/lib:${libvorbis}/lib:${libogg}/lib:${flac.out}/lib" \
+          --set-rpath "${stdenv.cc.libc}/lib:${libvorbis}/lib:${libogg}/lib:${flac.out}/lib" \
           $out/resources/app/extensions/kha/Kha/Tools/oggenc/oggenc-linux64
 
       # Patch Shared Objects
-      patchelf --set-rpath ".:${stdenv.cc.libc}/lib:${stdenv.cc.cc.lib}/lib" $out/libnode.so
-      patchelf --set-rpath ".:${stdenv.cc.libc}/lib" $out/libffmpeg.so
-      patchelf --set-rpath ".:${stdenv.cc.libc}/lib:${stdenv.cc.cc.lib}/lib" $out/resources/app/extensions/krom/Krom/linux/libv8_libplatform.so
-      patchelf --set-rpath ".:${stdenv.cc.libc}/lib:${stdenv.cc.cc.lib}/lib" $out/resources/app/extensions/krom/Krom/linux/libicuuc.so
-      patchelf --set-rpath ".:${stdenv.cc.libc}/lib:${stdenv.cc.cc.lib}/lib" $out/resources/app/extensions/krom/Krom/linux/libv8_libbase.so
-      patchelf --set-rpath ".:${stdenv.cc.libc}/lib:${stdenv.cc.cc.lib}/lib" $out/resources/app/extensions/krom/Krom/linux/libv8.so
-      patchelf --set-rpath ".:${stdenv.cc.libc}/lib:${stdenv.cc.cc.lib}/lib" $out/resources/app/extensions/krom/Krom/linux/libicui18n.so
-      patchelf --set-rpath ".:${stdenv.cc.libc}/lib:${boehmgc}/lib" $out/resources/app/extensions/kha/Kha/Backends/Kore/khacpp/project/libs/nekoapi/bin/RPi/libneko.so
-      patchelf --set-rpath ".:${stdenv.cc.libc}/lib:${boehmgc}/lib" $out/resources/app/extensions/kha/Kha/Backends/Kore/khacpp/project/libs/nekoapi/bin/Linux64/libneko.so
-      patchelf --set-rpath ".:${stdenv.cc.libc}/lib:${boehmgc}/lib" $out/resources/app/extensions/kha/Kha/Backends/Kore/khacpp/project/libs/nekoapi/bin/Linux/libneko.so
-      patchelf --set-rpath ".:${stdenv.cc.libc}/lib:${stdenv.cc.cc.lib}/lib" $out/resources/app/node_modules/pty.js/build/Release/pty.node
-      patchelf --set-rpath ".:${stdenv.cc.libc}/lib:${stdenv.cc.cc.lib}/lib" $out/resources/app/node_modules/gc-signals/build/Release/gcsignals.node
-      patchelf --set-rpath ".:${stdenv.cc.libc}/lib:${stdenv.cc.cc.lib}/lib" $out/resources/app/node_modules/gc-signals/build/Release/obj.target/gcsignals.node
-      patchelf --set-rpath ".:${stdenv.cc.libc}/lib:${stdenv.cc.cc.lib}/lib" $out/resources/app/node_modules/oniguruma/build/Release/onig_scanner.node
-      patchelf --set-rpath ".:${stdenv.cc.libc}/lib:${stdenv.cc.cc.lib}/lib" $out/resources/app/node_modules/oniguruma/build/Release/obj.target/onig_scanner.node
-      patchelf --set-rpath ".:${stdenv.cc.libc}/lib:${stdenv.cc.cc.lib}/lib:${xorg.libX11}/lib" $out/resources/app/node_modules/native-keymap/build/Release/keymapping.node
-      patchelf --set-rpath ".:${stdenv.cc.libc}/lib:${stdenv.cc.cc.lib}/lib:${xorg.libX11}/lib" $out/resources/app/node_modules/native-keymap/build/Release/obj.target/keymapping.node
+      patchelf --set-rpath "${stdenv.cc.libc}/lib:${stdenv.cc.cc.lib}/lib" $out/libnode.so
+      patchelf --set-rpath "${stdenv.cc.libc}/lib" $out/libffmpeg.so
+      patchelf --set-rpath "$out/resources/app/extensions/krom/Krom/linux/:${stdenv.cc.libc}/lib:${stdenv.cc.cc.lib}/lib" $out/resources/app/extensions/krom/Krom/linux/libv8_libplatform.so
+      patchelf --set-rpath "${stdenv.cc.libc}/lib:${stdenv.cc.cc.lib}/lib" $out/resources/app/extensions/krom/Krom/linux/libicuuc.so
+      patchelf --set-rpath "${stdenv.cc.libc}/lib:${stdenv.cc.cc.lib}/lib" $out/resources/app/extensions/krom/Krom/linux/libv8_libbase.so
+      patchelf --set-rpath "$out/resources/app/extensions/krom/Krom/linux/:${stdenv.cc.libc}/lib:${stdenv.cc.cc.lib}/lib" $out/resources/app/extensions/krom/Krom/linux/libv8.so
+      patchelf --set-rpath "${stdenv.cc.libc}/lib:${stdenv.cc.cc.lib}/lib" $out/resources/app/extensions/krom/Krom/linux/libicui18n.so
+      patchelf --set-rpath "${stdenv.cc.libc}/lib:${boehmgc}/lib" $out/resources/app/extensions/kha/Kha/Backends/Kore/khacpp/project/libs/nekoapi/bin/RPi/libneko.so
+      patchelf --set-rpath "${stdenv.cc.libc}/lib:${boehmgc}/lib" $out/resources/app/extensions/kha/Kha/Backends/Kore/khacpp/project/libs/nekoapi/bin/Linux64/libneko.so
+      patchelf --set-rpath "${stdenv.cc.libc}/lib:${boehmgc}/lib" $out/resources/app/extensions/kha/Kha/Backends/Kore/khacpp/project/libs/nekoapi/bin/Linux/libneko.so
+      patchelf --set-rpath "${stdenv.cc.libc}/lib:${stdenv.cc.cc.lib}/lib" $out/resources/app/node_modules/pty.js/build/Release/pty.node
+      patchelf --set-rpath "${stdenv.cc.libc}/lib:${stdenv.cc.cc.lib}/lib" $out/resources/app/node_modules/gc-signals/build/Release/gcsignals.node
+      patchelf --set-rpath "${stdenv.cc.libc}/lib:${stdenv.cc.cc.lib}/lib" $out/resources/app/node_modules/gc-signals/build/Release/obj.target/gcsignals.node
+      patchelf --set-rpath "${stdenv.cc.libc}/lib:${stdenv.cc.cc.lib}/lib" $out/resources/app/node_modules/oniguruma/build/Release/onig_scanner.node
+      patchelf --set-rpath "${stdenv.cc.libc}/lib:${stdenv.cc.cc.lib}/lib" $out/resources/app/node_modules/oniguruma/build/Release/obj.target/onig_scanner.node
+      patchelf --set-rpath "${stdenv.cc.libc}/lib:${stdenv.cc.cc.lib}/lib:${xorg.libX11}/lib" $out/resources/app/node_modules/native-keymap/build/Release/keymapping.node
+      patchelf --set-rpath "${stdenv.cc.libc}/lib:${stdenv.cc.cc.lib}/lib:${xorg.libX11}/lib" $out/resources/app/node_modules/native-keymap/build/Release/obj.target/keymapping.node
 
       # Rewrite VSCODE_PATH inside bin/kodestudio to $out
       substituteInPlace $out/bin/kodestudio --replace "/usr/share/kodestudio" $out
@@ -107,10 +107,6 @@ in
       #   (33188 is 100644 octal, the required mode)
       substituteInPlace $out/resources/app/extensions/kha/Kha/Tools/khamake/node_modules/fs-extra/lib/copy-sync/copy-file-sync.js --replace "stat.mode" "33188"
       substituteInPlace $out/resources/app/extensions/kha/Kha/Kore/Tools/koremake/node_modules/fs-extra/lib/copy-sync/copy-file-sync.js --replace "stat.mode" "33188"
-
-      # Wrap preload libXss
-      wrapProgram $out/bin/kodestudio \
-          --prefix LD_PRELOAD : ${stdenv.lib.makeLibraryPath [ libXScrnSaver ]}/libXss.so.1
     '';
 
     meta = with stdenv.lib; {
